@@ -31,7 +31,7 @@ async function getTasks(count = 20): Promise<ITask[]> {
 
 async function getGroups(count = 20): Promise<any[]> {
     const statement = SqlString.format(
-        "SELECT * FROM ZGROUP LIMIT ?",
+        "select ZTITLE, ZDISPLAYORDER from ZGROUP order by ZDISPLAYORDER limit ?",
         [count]
     )
     return await all<any>(db, statement);
@@ -41,9 +41,9 @@ async function getGroups(count = 20): Promise<any[]> {
     // const tasks = await getTasks();
     // tasks.forEach((t) => console.log(t.title));
 
-    (await getGroups(40)).forEach((v) => console.dir(v));
+    (await getGroups(400)).forEach((v) => console.dir(v));
 
-    (await all<any>(db, "SELECT * from ZGROUP LIMIT 20")).forEach((t) => console.dir(t));
+    // (await all<any>(db, "SELECT * from ZGROUP LIMIT 20")).forEach((t) => console.dir(t));
     db.close();
 })()).catch((reason) => {
     throw reason;
