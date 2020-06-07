@@ -11,11 +11,12 @@ export interface ITag {
 }
 
 export interface IFolder {
+    title: string;
     children: Array<IFolder | IList> | null;
 }
 
 export interface IList {
-    // TODO
+    title: string;
 }
 
 // TODO cleanup
@@ -99,8 +100,6 @@ export default class Library {
 
     public async getLists(): Promise<Array<IFolder | IList>> {
         const topFolders = await this.getChildGroups(this.foldersGroup.Z_PK);
-        Log.verbose(topFolders, { dir: true });
-
         return await Promise.all(topFolders.map((group) => this.parseGroup(group)));
     }
 
@@ -134,16 +133,20 @@ export default class Library {
     }
 
     private async parseGroup(group: IGroup): Promise<IFolder | IList> {
+        Log.verbose(group, { dir: true });
+
         if (group.ZTYPE === "folder") {
             const childGroups = await this.getChildGroups(group.Z_PK);
             const parsedChildren = await Promise.all(childGroups.map((childGroup) => this.parseGroup(childGroup)));
             const folder: IFolder = {
+                title: group.ZTITLE,
                 children: parsedChildren
             };
             return folder;
         } else if (group.ZTYPE === "list") {
-            // TODO
-            return group;
+            return {
+                title: group.ZTITLE
+            };
         }
 
         throw new Error(`Unexpected list type ${group.ZTYPE} for ${group.ZTITLE} (${group.Z_PK})`);
