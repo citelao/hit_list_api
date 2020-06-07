@@ -10,7 +10,7 @@ function showHelp() {
 }
 
 function printFolder(list: IFolder | IList, indent = 0) {
-    console.log("\t".repeat(indent) + list.title);
+    console.log(`${"\t".repeat(indent)} ${list.title} (${list.id})`);
     if (list.type === "folder") {
         if (list.children) {
             list.children.forEach((child) => printFolder(child, indent + 1));
