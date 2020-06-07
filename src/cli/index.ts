@@ -40,11 +40,15 @@ function printFolder(list: IFolder | IList, indent = 0) {
 
 function printTask(task: ITask, indent = 0) {
     const state = task.status === "completed"
-        ? "✓"
+        ? chalk.green("[✓]")
         : (task.status === "canceled")
-            ? "x"
-            : " ";
-    console.log(`${"\t".repeat(indent)}[${state}] ${task.title} (${task.id})`);
+            ? chalk.red.strikethrough("[x]")
+            : "[ ]";
+    console.log(`${"\t".repeat(indent)}${state} `
+        + ((task.status === "canceled")
+            ? chalk.strikethrough(task.title)
+            : task.title)
+        + chalk.gray(` (${task.id})`));
     if (task.children) {
         task.children.forEach((child) => printTask(child, indent + 1));
     }
