@@ -2,6 +2,22 @@ import Library, { IList, IFolder, ITask } from "../api/Library";
 
 const PATH = "/Users/citelao/Library/Application Support/The Hit List/The Hit List Library.thllibrary/library.sqlite3";
 
+function findList(lists: Array<IList | IFolder>, predicate: (list: IList | IFolder) => boolean): IList | IFolder | null {
+    for(let i = 0; i < lists.length; i++) {
+        const list = lists[i];
+        if (predicate(list)) {
+            return list;
+        }
+
+        if (list.type === "folder" && list.children) {
+            const child = findList(list.children, predicate);
+            if (child) {
+                return child;
+            }
+        }
+    }
+}
+
 function showHelp() {
     console.log("Hit List!");
     console.log("");
@@ -51,7 +67,7 @@ if(args.length === 0) {
     } else if (args[0] === "--tasks") {
         const id = parseInt(args[1], 10);
         const lists = await library.getLists();
-        const list = lists.find((l) => l.id === id);
+        const list = findList(lists, (l) => l.id === id));
         if (!list) {
             throw new Error(`Could not find list ${id}.`);
         }
