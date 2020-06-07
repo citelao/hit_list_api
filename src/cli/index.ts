@@ -6,7 +6,7 @@ const PATH = "/Users/citelao/Library/Application Support/The Hit List/The Hit Li
     const library = await Library.create(PATH);
     // (await library.getTags()).forEach((tag) => console.dir(tag));
     (await library.getLists()).forEach((folder) => console.dir(folder));
-    // console.dir((await library.getTags()).l);
+    (await library.getTags()).forEach((folder) => console.dir(folder));
     library.close();
 })()).catch((reason) => {
     throw reason;

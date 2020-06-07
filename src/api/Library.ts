@@ -7,15 +7,28 @@ export interface ITask {
 };
 
 export interface ITag {
-    // TODO;
+    id: number;
+    type: "tag";
+    title: string;
+}
+
+export interface ITagFolder {
+    id: number;
+    type: "folder";
+    title: string;
+    children: Array<ITag | ITagFolder> | null;
 }
 
 export interface IFolder {
+    id: number;
+    type: "folder";
     title: string;
     children: Array<IFolder | IList> | null;
 }
 
 export interface IList {
+    id: number;
+    type: "list";
     title: string;
 }
 
@@ -94,8 +107,9 @@ export default class Library {
         this.foldersGroup = findGroupByTitle(baseGroups, "Folders");
     }
 
-    public async getTags(): Promise<ITag[]> {
-        return await this.getChildGroups(this.tagGroup.Z_PK);
+    public async getTags(): Promise<Array<ITag | ITagFolder>> {
+        const tagGroups = await this.getChildGroups(this.tagGroup.Z_PK);
+        return await Promise.all(tagGroups.map((group) => this.parseTagGroup(group)));
     }
 
     public async getLists(): Promise<Array<IFolder | IList>> {
@@ -139,12 +153,38 @@ export default class Library {
             const childGroups = await this.getChildGroups(group.Z_PK);
             const parsedChildren = await Promise.all(childGroups.map((childGroup) => this.parseGroup(childGroup)));
             const folder: IFolder = {
+                id: group.Z_PK,
+                type: "folder",
                 title: group.ZTITLE,
                 children: parsedChildren
             };
             return folder;
         } else if (group.ZTYPE === "list") {
             return {
+                id: group.Z_PK,
+                type: "list",
+                title: group.ZTITLE
+            };
+        }
+
+        throw new Error(`Unexpected list type ${group.ZTYPE} for ${group.ZTITLE} (${group.Z_PK})`);
+    }
+
+    private async parseTagGroup(group: IGroup): Promise<ITag | ITagFolder> {
+        if (group.ZTYPE === "folder") {
+            const childGroups = await this.getChildGroups(group.Z_PK);
+            const parsedChildren = await Promise.all(childGroups.map((childGroup) => this.parseTagGroup(childGroup)));
+            const folder: ITagFolder = {
+                id: group.Z_PK,
+                type: "folder",
+                title: group.ZTITLE,
+                children: parsedChildren
+            };
+            return folder;
+        } else if (group.ZTYPE === "tag") {
+            return {
+                id: group.Z_PK,
+                type: "tag",
                 title: group.ZTITLE
             };
         }
