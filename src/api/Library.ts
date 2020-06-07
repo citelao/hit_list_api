@@ -88,7 +88,7 @@ export default class Library {
     }
 
     // Private helpers
-    private async getGroups(count = 20): Promise<any[]> {
+    private async getGroups(count = 20): Promise<IGroup[]> {
         const statement = SqlString.format(
             "select * from ZGROUP order by ZDISPLAYORDER limit ?",
             [count]
