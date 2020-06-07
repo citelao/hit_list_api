@@ -58,6 +58,7 @@ export async function getChildGroups(db: sqlite3.Database, groupId: number): Pro
 export interface IRawTask {
     Z_PK: number;
     ZTITLE: string;
+    ZSTATUS: string | null;
 }
 
 export async function getTasks(db: sqlite3.Database, list_id: number): Promise<IRawTask[]> {

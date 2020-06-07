@@ -3,10 +3,12 @@ import Log from "../util/Logger";
 import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks } from "./database";
 import { raw } from "sqlstring";
 
+export type Status = "completed" | "canceled" | null;
 export interface ITask {
     id: number;
     title: string;
     children: Array<ITask>;
+    status: Status;
 };
 
 export interface ITag {
@@ -139,12 +141,26 @@ export default class Library {
         throw new Error(`Unexpected list type ${group.ZTYPE} for ${group.ZTITLE} (${group.Z_PK})`);
     }
 
+    private static parseStatus(status: string | null): Status {
+        switch(status) {
+            case "C":
+                return "completed";
+            case "X":
+                return "canceled";
+            case null:
+                return null;
+        }
+
+        throw new Error(`Unexpected status "${status}"`);
+    } 
+
     private async parseTask(rawTask: IRawTask): Promise<ITask> {
         const childTasks = await getChildTasks(this.db, rawTask.Z_PK);
         return {
             id: rawTask.Z_PK,
             title: rawTask.ZTITLE,
-            children: await Promise.all(childTasks.map((child) => this.parseTask(child)))
+            children: await Promise.all(childTasks.map((child) => this.parseTask(child))),
+            status: Library.parseStatus(rawTask.ZSTATUS)
         }
     }
 
