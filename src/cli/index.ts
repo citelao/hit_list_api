@@ -74,13 +74,14 @@ if(args.length === 0) {
     } else if (args[0] === "--tasks") {
         const id = parseInt(args[1], 10);
         const lists = await library.getLists();
-        const list = findList(lists, (l) => l.id === id));
+        const list = findList(lists, (l) => l.id === id);
         if (!list) {
             throw new Error(`Could not find list ${id}.`);
         }
         if (list.type === "folder") {
             throw new Error(`List ${id} is a folder`);
         }
+        console.log(chalk.bold(list.title));
         const tasks = await library.getTasks(list!);
         tasks.forEach((task) => printTask(task));
     } else {
