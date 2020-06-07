@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import Library, { IList, IFolder, ITask } from "../api/Library";
+import Library, { IList, IFolder, ITask, ITagFolder, ITag } from "../api/Library";
 
 const PATH = "/Users/citelao/Library/Application Support/The Hit List/The Hit List Library.thllibrary/library.sqlite3";
 
@@ -25,6 +25,7 @@ function showHelp() {
     console.log("");
     console.log("Args:");
     console.log("--folders: print folders");
+    console.log("--tags: print tags");
     console.log("--tasks list_id: print all tasks of a list");
 }
 
@@ -34,6 +35,16 @@ function printFolder(list: IFolder | IList, indent = 0) {
     if (list.type === "folder") {
         if (list.children) {
             list.children.forEach((child) => printFolder(child, indent + 1));
+        }
+    }
+}
+
+function printTag(tag: ITag | ITagFolder, indent = 0) {
+    console.log(`${"\t".repeat(indent)}${tag.title} `
+        + chalk.gray(`(${tag.id})`));
+    if (tag.type === "folder") {
+        if (tag.children) {
+            tag.children.forEach((child) => printTag(child, indent + 1));
         }
     }
 }
@@ -71,6 +82,9 @@ if(args.length === 0) {
     if (args[0] === "--folders") {
         const lists = await library.getLists();
         lists.forEach((list) => printFolder(list));
+    } else if (args[0] === "--tags") {
+        const tags = await library.getTags();
+        tags.forEach((tag) => printTag(tag));
     } else if (args[0] === "--tasks") {
         const id = parseInt(args[1], 10);
         const lists = await library.getLists();
