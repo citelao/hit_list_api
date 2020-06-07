@@ -1,5 +1,6 @@
 import sqlite3 from "sqlite3";
 import SqlString from "sqlstring";
+import Log from "../util/Logger";
 
 export interface ITask {
     title: string;
@@ -7,6 +8,14 @@ export interface ITask {
 
 export interface ITag {
     // TODO;
+}
+
+export interface IFolder {
+    children: Array<IFolder | IList> | null;
+}
+
+export interface IList {
+    // TODO
 }
 
 // TODO cleanup
@@ -46,10 +55,11 @@ async function get<T>(db: sqlite3.Database, query: string): Promise<T> {
 interface IGroup {
     Z_PK: number;
     ZTITLE: string;
+    ZTYPE: "folder" | "list" | "smart" | "tag";
 }
 
-function getTagGroup(baseGroups: IGroup[]): IGroup {
-    const group = baseGroups.find((group) => group.ZTITLE === "Tags");
+function findGroupByTitle(groups: IGroup[], title: string): IGroup {
+    const group = groups.find((group) => group.ZTITLE === title);
     if (!group) {
         throw new Error("No tag group!");
     }
@@ -62,6 +72,7 @@ export default class Library {
 
     private rootGroup!: IGroup;
     private tagGroup!: IGroup;
+    private foldersGroup!: IGroup;
 
     public static async create(path: string) {
         const lib = new Library(path);
@@ -76,11 +87,21 @@ export default class Library {
     private async initialize() {
         this.rootGroup = await this.getRootGroup();
         const baseGroups = await this.getChildGroups(this.rootGroup.Z_PK);
-        this.tagGroup = getTagGroup(baseGroups);
+
+        // TODO: does this work with loc?
+        this.tagGroup = findGroupByTitle(baseGroups, "Tags");
+        this.foldersGroup = findGroupByTitle(baseGroups, "Folders");
     }
 
     public async getTags(): Promise<ITag[]> {
         return await this.getChildGroups(this.tagGroup.Z_PK);
+    }
+
+    public async getLists(): Promise<Array<IFolder | IList>> {
+        const topFolders = await this.getChildGroups(this.foldersGroup.Z_PK);
+        Log.verbose(topFolders, { dir: true });
+
+        return await Promise.all(topFolders.map((group) => this.parseGroup(group)));
     }
 
     public close(): void {
@@ -111,4 +132,21 @@ export default class Library {
         );
         return await all<any>(this.db, statement);
     }
+
+    private async parseGroup(group: IGroup): Promise<IFolder | IList> {
+        if (group.ZTYPE === "folder") {
+            const childGroups = await this.getChildGroups(group.Z_PK);
+            const parsedChildren = await Promise.all(childGroups.map((childGroup) => this.parseGroup(childGroup)));
+            const folder: IFolder = {
+                children: parsedChildren
+            };
+            return folder;
+        } else if (group.ZTYPE === "list") {
+            // TODO
+            return group;
+        }
+
+        throw new Error(`Unexpected list type ${group.ZTYPE} for ${group.ZTITLE} (${group.Z_PK})`);
+    }
+
 }
