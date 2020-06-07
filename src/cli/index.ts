@@ -1,3 +1,5 @@
+import chalk from "chalk";
+
 import Library, { IList, IFolder, ITask } from "../api/Library";
 
 const PATH = "/Users/citelao/Library/Application Support/The Hit List/The Hit List Library.thllibrary/library.sqlite3";
@@ -27,7 +29,8 @@ function showHelp() {
 }
 
 function printFolder(list: IFolder | IList, indent = 0) {
-    console.log(`${"\t".repeat(indent)}${list.title} (${list.id})`);
+    console.log(`${"\t".repeat(indent)}${list.title} `
+        + chalk.gray(`(${list.id})`));
     if (list.type === "folder") {
         if (list.children) {
             list.children.forEach((child) => printFolder(child, indent + 1));
