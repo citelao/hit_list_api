@@ -162,10 +162,11 @@ export default class Library {
     } 
 
     private static parseTimestamp(timestamp: number): Date {
-        // TODO BAD.
-        // console.log(new Date(timestamp));
-        return new Date(timestamp);
-        // throw new Error(`Cannot parse ${timestamp}`);
+        // All timestamp dates in the Hit List seem to be offset by a fixed
+        // value.
+        const DATE_OFFSET = 977577918;
+        const unixTimestamp = timestamp + DATE_OFFSET
+        return new Date(unixTimestamp * 1000);
     }
 
     private async parseTask(rawTask: IRawTask): Promise<ITask> {

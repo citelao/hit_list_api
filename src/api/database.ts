@@ -90,6 +90,8 @@ export async function getChildTasks(db: sqlite3.Database, task_id: number): Prom
 export interface IRawNote {
     Z_PK: number;
     ZSTRING: string;
+
+    // There's also a Blob of ZWEBARCHIVEDATA which includes bold italics etc.
 }
 
 export async function getNote(db: sqlite3.Database, note_id: number): Promise<IRawNote> {

@@ -1,4 +1,6 @@
 import chalk from "chalk";
+import stripAnsi from "strip-ansi";
+import dateformat from "dateformat";
 
 import Library, { IList, IFolder, ITask, ITagFolder, ITag } from "../api/Library";
 
@@ -57,12 +59,18 @@ function printTask(task: ITask, indent = 0) {
         : (task.status === "canceled")
             ? chalk.red.strikethrough("[x]")
             : "[ ]";
-    console.log(`${"\t".repeat(indent)}${state} `
+    const firstLine = `${"\t".repeat(indent)}${state} `
         + ((task.status === "canceled")
             ? chalk.strikethrough(task.title)
             : task.title)
-        + chalk.gray(` (${task.id})`));
+        + chalk.gray(` (${task.id})`)
+        + ((task.due_date !== null)
+            ? chalk.green(" " + dateformat(task.due_date!, "yyyy/mm/dd"))
+            : "");
 
+    console.log(firstLine);
+
+    // Print notes, trimmed to fit.
     if (task.notes) {
         const COLUMN_LIMIT = process.stdout.columns;
         const TAB_WIDTH = 8;
