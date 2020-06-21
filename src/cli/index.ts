@@ -64,8 +64,8 @@ function printTask(task: ITask, indent = 0) {
         + chalk.gray(` (${task.id})`));
 
     if (task.notes) {
-        const COLUMN_LIMIT = 70;
-        const TAB_WIDTH = 4;
+        const COLUMN_LIMIT = process.stdout.columns;
+        const TAB_WIDTH = 8;
         const maxNoteLength = COLUMN_LIMIT - TAB_WIDTH * (indent + 1);
 
         const trimmedNote = (task.notes.text.length > maxNoteLength)
