@@ -194,13 +194,13 @@ function printTask(task: ITask, indent = 0) {
         const maxNoteLength = COLUMN_LIMIT - TAB_WIDTH * (indent + 1);
 
         const trimmedNote = (task.notes.text.length > maxNoteLength)
-            ? task.notes.text.substr(0, maxNoteLength - 3) + "..."
+            ? task.notes.text.substr(0, maxNoteLength - 1) + "…"
             : task.notes.text;
         
         const newLineIndex = trimmedNote.indexOf("\n");
         const finalTrimmedNote = (newLineIndex === -1)
             ? trimmedNote
-            : trimmedNote.substr(0, newLineIndex) + "...";
+            : trimmedNote.substr(0, newLineIndex) + "…";
 
         console.log(`${"\t".repeat(indent + 1)}`
             + chalk.grey.italic(finalTrimmedNote))
