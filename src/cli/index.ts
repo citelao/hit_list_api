@@ -117,13 +117,12 @@ function columns(
                     ? " ".repeat(stretchLength)
                     : "");
         }, "");
+    } else if (naiveLength > maxLength) {
+
     }
 
-    if (naiveLength <= maxLength) {
-        return naiveString;
-    }
-
-    return "";
+    // String must be the right size.
+    return naiveString;
 }
 
 function printTask(task: ITask, indent = 0) {
@@ -150,7 +149,11 @@ function printTask(task: ITask, indent = 0) {
                 ? chalk.green(formattedDate)
                 : chalk.red(formattedDate));
 
+    const TAB_WIDTH = 8;
+    const COLUMN_LIMIT = process.stdout.columns;
+    const maxLength = COLUMN_LIMIT - TAB_WIDTH * indent;
     console.log(
+        "\t".repeat(indent) +
         columns([
             state,
             title,
@@ -161,12 +164,12 @@ function printTask(task: ITask, indent = 0) {
             { canCollapse: true, shouldStretch: false },
             { canCollapse: false, shouldStretch: true },
             { canCollapse: false, shouldStretch: false },
-        ]));
+        ], {
+            maxLength: maxLength
+        }));
 
     // Print notes, trimmed to fit.
     if (task.notes) {
-        const COLUMN_LIMIT = process.stdout.columns;
-        const TAB_WIDTH = 8;
         const maxNoteLength = COLUMN_LIMIT - TAB_WIDTH * (indent + 1);
 
         const trimmedNote = (task.notes.text.length > maxNoteLength)
