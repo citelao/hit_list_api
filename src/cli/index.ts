@@ -59,14 +59,24 @@ function printTask(task: ITask, indent = 0) {
         : (task.status === "canceled")
             ? chalk.red.strikethrough("[x]")
             : "[ ]";
+
+    const formattedDate = (task.due_date)
+        ? dateformat(task.due_date, "yyyy/mm/dd")
+        : "";
+    const dueDate = (task.due_date === null)
+        ? ""
+        : ((task.status === "completed" || task.status === "canceled")
+            ? chalk.grey(` ${formattedDate}`)
+            : (new Date() > task.due_date)
+                ? chalk.green(` ${formattedDate}`)
+                : chalk.red(` ${formattedDate}`));
+
     const firstLine = `${"\t".repeat(indent)}${state} `
         + ((task.status === "canceled")
             ? chalk.strikethrough(task.title)
             : task.title)
         + chalk.gray(` (${task.id})`)
-        + ((task.due_date !== null)
-            ? chalk.green(" " + dateformat(task.due_date!, "yyyy/mm/dd"))
-            : "");
+        + dueDate;
 
     console.log(firstLine);
 
