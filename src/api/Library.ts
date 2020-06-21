@@ -163,7 +163,9 @@ export default class Library {
 
     private static parseTimestamp(timestamp: number): Date {
         // All timestamp dates in the Hit List seem to be offset by a fixed
-        // value.
+        // value. The offset here is basically ad-hoc determined by subtracting
+        // the expected timestamp from the one in the database. It should be
+        // accurate +/- 12 hours.
         const DATE_OFFSET = 977577918;
         const unixTimestamp = timestamp + DATE_OFFSET
         return new Date(unixTimestamp * 1000);
