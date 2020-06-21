@@ -53,6 +53,50 @@ function printTag(tag: ITag | ITagFolder, indent = 0) {
     }
 }
 
+/**
+ * Print text out in nice columns.
+ *
+ * @param content Content; can contain ANSI codes. These will be output but
+ * excluded from measurement.
+ * @param columns 
+ * @param maxLength 
+ */
+function columns(
+    content: Array<string | null>,
+    columns: Array<{ canCollapse: boolean; }>,
+    { maxLength, padding }: {
+        maxLength?: number;
+        padding?: string;
+    } = {}): string {
+
+    if (!maxLength) {
+        maxLength = process.stdout.columns;
+    }
+
+    if (!padding) {
+        padding = " ";
+    }
+
+    // Naively try to print content:
+    const naiveString = content.reduce<string>((gathered, value) => {
+        if (!value) {
+            return gathered;
+        }
+
+        if (gathered.length === 0) {
+            return value;
+        }
+
+        return gathered + padding + value;
+    }, "");
+
+    if (stripAnsi(naiveString).length <= maxLength) {
+        return naiveString;
+    }
+
+    return "";
+}
+
 function printTask(task: ITask, indent = 0) {
     const state = task.status === "completed"
         ? chalk.green("[✓]")
@@ -60,25 +104,35 @@ function printTask(task: ITask, indent = 0) {
             ? chalk.red.strikethrough("[x]")
             : "[ ]";
 
+    const title = (task.status === "canceled")
+        ? chalk.strikethrough(task.title)
+        : task.title;
+
+    const id = chalk.gray(`(${task.id})`);
+
     const formattedDate = (task.due_date)
         ? dateformat(task.due_date, "yyyy/mm/dd")
         : "";
     const dueDate = (task.due_date === null)
         ? ""
         : ((task.status === "completed" || task.status === "canceled")
-            ? chalk.grey(` ${formattedDate}`)
+            ? chalk.grey(formattedDate)
             : (new Date() > task.due_date)
-                ? chalk.green(` ${formattedDate}`)
-                : chalk.red(` ${formattedDate}`));
+                ? chalk.green(formattedDate)
+                : chalk.red(formattedDate));
 
-    const firstLine = `${"\t".repeat(indent)}${state} `
-        + ((task.status === "canceled")
-            ? chalk.strikethrough(task.title)
-            : task.title)
-        + chalk.gray(` (${task.id})`)
-        + dueDate;
-
-    console.log(firstLine);
+    console.log(
+        columns([
+            state,
+            title,
+            id,
+            dueDate
+        ], [
+            { canCollapse: false },
+            { canCollapse: true },
+            { canCollapse: false },
+            { canCollapse: false },
+        ]));
 
     // Print notes, trimmed to fit.
     if (task.notes) {
