@@ -63,7 +63,7 @@ function printTag(tag: ITag | ITagFolder, indent = 0) {
  */
 function columns(
     content: Array<string | null>,
-    columns: Array<{ canCollapse: boolean; }>,
+    columns: Array<{ canCollapse: boolean; shouldStretch: boolean; }>,
     { maxLength, padding }: {
         maxLength?: number;
         padding?: string;
@@ -89,8 +89,9 @@ function columns(
 
         return gathered + padding + value;
     }, "");
+    const naiveLength = stripAnsi(naiveString).length;
 
-    if (stripAnsi(naiveString).length <= maxLength) {
+    if (naiveLength <= maxLength) {
         return naiveString;
     }
 
@@ -128,10 +129,10 @@ function printTask(task: ITask, indent = 0) {
             id,
             dueDate
         ], [
-            { canCollapse: false },
-            { canCollapse: true },
-            { canCollapse: false },
-            { canCollapse: false },
+            { canCollapse: false, shouldStretch: false },
+            { canCollapse: true, shouldStretch: true },
+            { canCollapse: false, shouldStretch: false },
+            { canCollapse: false, shouldStretch: false },
         ]));
 
     // Print notes, trimmed to fit.
