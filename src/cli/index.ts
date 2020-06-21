@@ -96,8 +96,8 @@ function columns(
         ? stripAnsi(c).length
         : 0);
 
-    // Only handle 1 stretch column.
     if (naiveLength < maxLength) {
+        // Only handle 1 stretch column.
         const stretchLength = maxLength - naiveLength;
         return content.reduce<string>((gathered, value, index) => {
             const columnProperties = columns[index];
@@ -118,7 +118,28 @@ function columns(
                     : "");
         }, "");
     } else if (naiveLength > maxLength) {
+        // Only handle 1 collapse column.
+        const collapseLength = naiveLength - maxLength;
+        return content.reduce<string>((gathered, value, index) => {
+            const columnProperties = columns[index];
 
+            if (!value) {
+                return gathered;
+            }
+
+            const valueLength = stripAnsi(value).length;
+            const trimmedValue = (columnProperties.canCollapse)
+                ? value.substr(0, valueLength - collapseLength - 1) + "…"
+                : value;
+    
+            if (gathered.length === 0) {
+                return trimmedValue;
+            }
+
+            return gathered +
+                padding +
+                trimmedValue;
+        }, "");
     }
 
     // String must be the right size.
