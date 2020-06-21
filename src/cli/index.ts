@@ -77,6 +77,19 @@ function columns(
         padding = " ";
     }
 
+    // Get rid of any new lines in strings.
+    content = content.map((v) => {
+        if (!v) {
+            return v;
+        }
+
+        const newLineIndex = v.indexOf("\n");
+        const trimmedValue = (newLineIndex === -1)
+            ? v
+            : v.substr(0, newLineIndex) + "…";
+        return trimmedValue;
+    })
+
     // Naively try to print content:
     const naiveString = content.reduce<string>((gathered, value) => {
         if (!value) {
@@ -189,21 +202,15 @@ function printTask(task: ITask, indent = 0) {
             maxLength: maxLength
         }));
 
-    // Print notes, trimmed to fit.
     if (task.notes) {
+        // Print notes, trimmed to fit. Using `columns` means that the ellipsis
+        // will not be the right style, but that's ok.
         const maxNoteLength = COLUMN_LIMIT - TAB_WIDTH * (indent + 1);
-
-        const trimmedNote = (task.notes.text.length > maxNoteLength)
-            ? task.notes.text.substr(0, maxNoteLength - 1) + "…"
-            : task.notes.text;
-        
-        const newLineIndex = trimmedNote.indexOf("\n");
-        const finalTrimmedNote = (newLineIndex === -1)
-            ? trimmedNote
-            : trimmedNote.substr(0, newLineIndex) + "…";
-
         console.log(`${"\t".repeat(indent + 1)}`
-            + chalk.grey.italic(finalTrimmedNote))
+            + columns(
+                [chalk.grey.italic(task.notes.text)],
+                [{ canCollapse: true, shouldStretch: false}],
+                { maxLength: maxNoteLength}));
     }
 
     if (task.children) {
