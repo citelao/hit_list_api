@@ -91,6 +91,34 @@ function columns(
     }, "");
     const naiveLength = stripAnsi(naiveString).length;
 
+    const paddingLength = stripAnsi(padding).length;
+    const stringLengths = content.map((c) => (c)
+        ? stripAnsi(c).length
+        : 0);
+
+    // Only handle 1 stretch column.
+    if (naiveLength < maxLength) {
+        const stretchLength = maxLength - naiveLength;
+        return content.reduce<string>((gathered, value, index) => {
+            const columnProperties = columns[index];
+
+            if (!value) {
+                return gathered;
+            }
+    
+            if (gathered.length === 0) {
+                return value;
+            }
+
+            return gathered +
+                padding +
+                value + 
+                ((columnProperties.shouldStretch)
+                    ? " ".repeat(stretchLength)
+                    : "");
+        }, "");
+    }
+
     if (naiveLength <= maxLength) {
         return naiveString;
     }
@@ -130,8 +158,8 @@ function printTask(task: ITask, indent = 0) {
             dueDate
         ], [
             { canCollapse: false, shouldStretch: false },
-            { canCollapse: true, shouldStretch: true },
-            { canCollapse: false, shouldStretch: false },
+            { canCollapse: true, shouldStretch: false },
+            { canCollapse: false, shouldStretch: true },
             { canCollapse: false, shouldStretch: false },
         ]));
 
