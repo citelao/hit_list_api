@@ -18,6 +18,8 @@ function findList(lists: Array<IList | IFolder>, predicate: (list: IList | IFold
             }
         }
     }
+
+    return null;
 }
 
 function showHelp() {
@@ -60,6 +62,25 @@ function printTask(task: ITask, indent = 0) {
             ? chalk.strikethrough(task.title)
             : task.title)
         + chalk.gray(` (${task.id})`));
+
+    if (task.notes) {
+        const COLUMN_LIMIT = 70;
+        const TAB_WIDTH = 4;
+        const maxNoteLength = COLUMN_LIMIT - TAB_WIDTH * (indent + 1);
+
+        const trimmedNote = (task.notes.text.length > maxNoteLength)
+            ? task.notes.text.substr(0, maxNoteLength - 3) + "..."
+            : task.notes.text;
+        
+        const newLineIndex = trimmedNote.indexOf("\n");
+        const finalTrimmedNote = (newLineIndex === -1)
+            ? trimmedNote
+            : trimmedNote.substr(0, newLineIndex) + "...";
+
+        console.log(`${"\t".repeat(indent + 1)}`
+            + chalk.grey.italic(finalTrimmedNote))
+    }
+
     if (task.children) {
         task.children.forEach((child) => printTask(child, indent + 1));
     }

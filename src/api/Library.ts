@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import Log from "../util/Logger";
-import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks } from "./database";
+import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote } from "./database";
 import { raw } from "sqlstring";
 
 export type Status = "completed" | "canceled" | null;
@@ -9,7 +9,14 @@ export interface ITask {
     title: string;
     children: Array<ITask>;
     status: Status;
+    due_date: Date | null;
+    notes: INote | null;
 };
+
+export interface INote {
+    id: number;
+    text: string;
+}
 
 export interface ITag {
     id: number;
@@ -154,14 +161,36 @@ export default class Library {
         throw new Error(`Unexpected status "${status}"`);
     } 
 
+    private static parseTimestamp(timestamp: number): Date {
+        // TODO BAD.
+        // console.log(new Date(timestamp));
+        return new Date(timestamp);
+        // throw new Error(`Cannot parse ${timestamp}`);
+    }
+
     private async parseTask(rawTask: IRawTask): Promise<ITask> {
         const childTasks = await getChildTasks(this.db, rawTask.Z_PK);
+        const rawNote = (rawTask.ZNOTES)
+            ? await getNote(this.db, rawTask.ZNOTES)
+            : null;
         return {
             id: rawTask.Z_PK,
             title: rawTask.ZTITLE,
             children: await Promise.all(childTasks.map((child) => this.parseTask(child))),
-            status: Library.parseStatus(rawTask.ZSTATUS)
+            status: Library.parseStatus(rawTask.ZSTATUS),
+            due_date: (rawTask.ZDUEDATE)
+                ? Library.parseTimestamp(rawTask.ZDUEDATE)
+                : null,
+            notes: (rawNote)
+                ? await this.parseNote(rawNote)
+                : null
         }
     }
 
+    private async parseNote(rawNote: IRawNote): Promise<INote> {
+        return {
+            id: rawNote.Z_PK,
+            text: rawNote.ZSTRING
+        }
+    }
 }

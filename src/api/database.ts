@@ -56,9 +56,19 @@ export async function getChildGroups(db: sqlite3.Database, groupId: number): Pro
 }
 
 export interface IRawTask {
+    // Primary key
     Z_PK: number;
+
+    // Name of task
     ZTITLE: string;
+
+    // Completed or cancelled or active.
     ZSTATUS: string | null;
+
+    ZDUEDATE: number | null;
+
+    // ID of any related notes
+    ZNOTES: number | null;
 }
 
 export async function getTasks(db: sqlite3.Database, list_id: number): Promise<IRawTask[]> {
@@ -75,4 +85,18 @@ export async function getChildTasks(db: sqlite3.Database, task_id: number): Prom
         [task_id]
     )
     return await all<IRawTask>(db, statement);
+}
+
+export interface IRawNote {
+    Z_PK: number;
+    ZSTRING: string;
+}
+
+export async function getNote(db: sqlite3.Database, note_id: number): Promise<IRawNote> {
+    // Only expect one note per task, at max.
+    const statement = SqlString.format(
+        "select * from ZTASKNOTES where Z_PK = ?",
+        [note_id]
+    )
+    return await get<IRawNote>(db, statement);
 }
