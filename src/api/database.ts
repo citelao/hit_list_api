@@ -71,11 +71,35 @@ export interface IRawTask {
     ZNOTES: number | null;
 }
 
-export async function getTasks(db: sqlite3.Database, list_id: number): Promise<IRawTask[]> {
-    const statement = SqlString.format(
+export async function getTasks(db: sqlite3.Database, list_id?: number, limit?: number): Promise<IRawTask[]> {
+    const allTasksStatement = SqlString.format(
+        "select * from ZTASK order by ZDISPLAYORDER limit ?",
+        [limit]
+    );
+    const listStatement = SqlString.format(
         "select * from ZTASK where ZPARENTLIST = ? order by ZDISPLAYORDER",
         [list_id]
     )
+
+    const statement = (list_id)
+        ? listStatement
+        : allTasksStatement;
+    return await all<IRawTask>(db, statement);
+}
+
+export async function getCompletedTasks(db: sqlite3.Database, list_id?: number, limit?: number): Promise<IRawTask[]> {
+    const allTasksStatement = SqlString.format(
+        "select * from ZTASK where ZCOMPLETEDDATE is not null order by ZCOMPLETEDDATE desc limit ?",
+        [limit]
+    );
+    const listStatement = SqlString.format(
+        "select * from ZTASK where ZPARENTLIST = ? and ZCOMPLETEDDATE is not null order by ZCOMPLETEDDATE desc",
+        [list_id]
+    )
+
+    const statement = (list_id)
+        ? listStatement
+        : allTasksStatement;
     return await all<IRawTask>(db, statement);
 }
 

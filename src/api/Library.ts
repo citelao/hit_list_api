@@ -1,6 +1,6 @@
 import sqlite3 from "sqlite3";
 import Log from "../util/Logger";
-import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote } from "./database";
+import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote, getCompletedTasks } from "./database";
 import { raw } from "sqlstring";
 
 export type Status = "completed" | "canceled" | null;
@@ -93,6 +93,12 @@ export default class Library {
         const tasks = await getTasks(this.db, list.id);
         Log.verbose(tasks, { dir: true });
         // throw new Error("unimpl");
+        return await Promise.all(tasks.map((task) => this.parseTask(task)));
+    }
+
+    public async getCompletedTasks(count: number): Promise<Array<ITask>> {
+        const tasks = await getCompletedTasks(this.db, undefined, count);
+
         return await Promise.all(tasks.map((task) => this.parseTask(task)));
     }
 

@@ -1,4 +1,4 @@
-const SHOW_VERBOSE = false;
+const SHOW_VERBOSE = true;
 
 export default class Log {
     public static verbose(message: any, { dir = false }: { dir?: boolean; } = {}) {

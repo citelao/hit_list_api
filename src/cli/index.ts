@@ -31,6 +31,7 @@ function showHelp() {
     console.log("--folders: print folders");
     console.log("--tags: print tags");
     console.log("--tasks list_id: print all tasks of a list");
+    console.log("--completed: prints last completed tasks");
 }
 
 function printFolder(list: IFolder | IList, indent = 0) {
@@ -250,6 +251,9 @@ if(args.length === 0) {
         }
         console.log(chalk.bold(list.title));
         const tasks = await library.getTasks(list!);
+        tasks.forEach((task) => printTask(task));
+    } else if (args[0] === "--completed") {
+        const tasks = await library.getCompletedTasks(10);
         tasks.forEach((task) => printTask(task));
     } else {
         showHelp();
