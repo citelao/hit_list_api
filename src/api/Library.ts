@@ -89,8 +89,11 @@ export default class Library {
         return await Promise.all(topFolders.map((group) => this.parseGroup(group)));
     }
 
-    public async getTasks(list: IList): Promise<Array<ITask>> {
-        const tasks = await getTasks(this.db, list.id);
+    public async getTasks(list?: IList): Promise<Array<ITask>> {
+        const id = list
+            ? list.id
+            : undefined;
+        const tasks = await getTasks(this.db, id, 20);
         Log.verbose(tasks, { dir: true });
         // throw new Error("unimpl");
         return await Promise.all(tasks.map((task) => this.parseTask(task)));

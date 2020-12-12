@@ -30,7 +30,7 @@ function showHelp() {
     console.log("Args:");
     console.log("--folders: print folders");
     console.log("--tags: print tags");
-    console.log("--tasks list_id: print all tasks of a list");
+    console.log("--tasks [list_id]: print all tasks of a list (or just the most recent tasks)");
     console.log("--completed: prints last completed tasks");
 }
 
@@ -244,17 +244,23 @@ if(args.length === 0) {
         tags.forEach((tag) => printTag(tag));
     } else if (args[0] === "--tasks") {
         const id = parseInt(args[1], 10);
-        const lists = await library.getLists();
-        const list = findList(lists, (l) => l.id === id);
-        if (!list) {
-            throw new Error(`Could not find list ${id}.`);
+        if (isNaN(id)) {
+            console.log(chalk.bold("All tasks"));
+            const tasks = await library.getTasks();
+            tasks.forEach((task) => printTask(task));
+        } else {
+            const lists = await library.getLists();
+            const list = findList(lists, (l) => l.id === id);
+            if (!list) {
+                throw new Error(`Could not find list ${id}.`);
+            }
+            if (list.type === "folder") {
+                throw new Error(`List ${id} is a folder`);
+            }
+            console.log(chalk.bold(list.title));
+            const tasks = await library.getTasks(list!);
+            tasks.forEach((task) => printTask(task));
         }
-        if (list.type === "folder") {
-            throw new Error(`List ${id} is a folder`);
-        }
-        console.log(chalk.bold(list.title));
-        const tasks = await library.getTasks(list!);
-        tasks.forEach((task) => printTask(task));
     } else if (args[0] === "--completed") {
         const tasks = await library.getCompletedTasks(10);
         tasks.forEach((task) => printTask(task));
