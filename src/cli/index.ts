@@ -206,10 +206,13 @@ function printTask(task: ITask, indent = 0) {
     if (task.notes) {
         // Print notes, trimmed to fit. Using `columns` means that the ellipsis
         // will not be the right style, but that's ok.
-        const maxNoteLength = COLUMN_LIMIT - TAB_WIDTH * (indent + 1);
-        console.log(`${"\t".repeat(indent + 1)}`
+        // 
+        // Offset of 4 for the `[ ] ` text
+        const offsetText = "    ";
+        const maxNoteLength = COLUMN_LIMIT - TAB_WIDTH * (indent);
+        console.log(`${"\t".repeat(indent)}`
             + columns(
-                [chalk.grey.italic(task.notes.text)],
+                [chalk.grey.italic(offsetText + task.notes.text)],
                 [{ canCollapse: true, shouldStretch: false}],
                 { maxLength: maxNoteLength}));
     }
