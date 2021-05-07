@@ -59,6 +59,25 @@ export interface IRawTask {
     // Primary key
     Z_PK: number;
 
+    // Unknown
+    Z_ENT: number | null;
+    Z_OPT: number | null;
+    ZARCHIVED: number | null;
+    ZPRIORITY: number | null;
+    ZPARENTLIST: number | null;
+    ZPARENTTASK: number | null;
+    ZRECURRENCE: number | null;
+    ZACTUALTIME: number | null;
+    ZCOMPLETEDDATE: number | null;
+    ZCREATEDDATE: number | null;
+    ZDISPLAYORDER: number | null;
+    ZESTIMATEDTIME: number | null;
+    ZMODIFIEDDATE: number | null;
+    ZCALENDARSTOREUID: number | null;
+    ZNOTESUID: string | null;
+
+    ZUID: string;
+
     // Name of task
     ZTITLE: string;
 
