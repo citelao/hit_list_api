@@ -16,6 +16,7 @@
     "dateformat": "^3.0.3",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "simple-plist": "^1.1.1",
     "sqlite3": "^4.2.0",
     "sqlstring": "^2.3.2",
     "strip-ansi": "^6.0.0"
