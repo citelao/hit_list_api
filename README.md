@@ -13,5 +13,7 @@ node ./dist/cli/index.js
 ## Usage
 
 ```bash
-node ./dist/cli/index.js --folders
+npm run run -- --folders
 ```
+
+(or `node ./dist/cli/index.js --folders`)

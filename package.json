@@ -2,12 +2,13 @@
   "name": "hit_list_api",
   "version": "1.0.0",
   "description": "Quick API for accessing the Hit List data",
-  "main": "index.js",
+  "main": "./dist/cli/index.js",
   "author": "Ben <ben@stolovitz.com>",
   "license": "Proprietary",
   "scripts": {
     "watch": "tsc -w",
-    "build": "tsc"
+    "build": "tsc",
+    "run": "npm run build && node ./dist/cli/index.js"
   },
   "dependencies": {
     "chalk": "^4.0.0",
