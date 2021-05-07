@@ -66,6 +66,7 @@
                     </td>
                 </tr>
                 <!-- TODO: nested children -->
+                <!-- https://www.w3.org/TR/wai-aria-practices/examples/treegrid/treegrid-1.html -->
                 <% task.children.forEach(task => { %>
                     <tr>
                         <td>
@@ -79,7 +80,7 @@
                             <% } %>
                         </td>
                         <td>
-                            ---
+                            <span style="opacity: 0.3;">---</span>
                             <% if (task.status === "completed") { %>
                                 <input type="checkbox" readonly checked />
                                 <%= task.title %>
