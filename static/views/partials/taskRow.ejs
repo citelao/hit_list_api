@@ -22,19 +22,19 @@
 
         <% if (task.status === "completed") { %>
             <input type="checkbox" readonly checked />
-            <a href="/task/<%= task.id %>/">
+            <a href="/task/<%= task.id %>/" class="task_link">
                 <%= task.title %>
             </a>
         <% } else if (task.status === "canceled") { %>
             <s>
                 <input type="checkbox" readonly />
-                <a href="/task/<%= task.id %>/">
+                <a href="/task/<%= task.id %>/" class="task_link">
                     <%= task.title %>
                 </a>
             </s>
         <% } else { %>
             <input type="checkbox" readonly />
-            <a href="/task/<%= task.id %>/">
+            <a href="/task/<%= task.id %>/" class="task_link">
                 <%= task.title %>
             </a>
         <% } %>
