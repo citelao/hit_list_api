@@ -1,5 +1,6 @@
 import express from "express";
 import Library, { IFolder, IList } from "../api/Library";
+import dateformat from "dateformat";
 const app = express();
 const port = 3000;
 
@@ -28,6 +29,12 @@ function findList(lists: Array<IList | IFolder>, predicate: (list: IList | IFold
 app.set("views", "static/views/");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+
+// Add dateformat to all ejs
+app.use((req, res, next)=>{
+  res.locals.dateformat = dateformat;
+  next();
+});
 
 app.get('/', async (req, res) => {
   const library = await Library.create(PATH);

@@ -10,39 +10,50 @@
 
 <section class="main">
     <table>
-        <% tasks.forEach(task => { %>
+        <thead>
             <tr>
-                <td>
-                    <% if (task.status === "completed") { %>
-                        <input type="checkbox" readonly checked />
-                        <%= task.title %>
-                    <% } else if (task.status === "canceled") { %>
-                        <s>
+                <th>&nbsp;<!-- Title (implicit) --></th>
+                <th>Start</th>
+                <th>Due</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% tasks.forEach(task => { %>
+                <tr>
+                    <td>
+                        <% if (task.status === "completed") { %>
+                            <input type="checkbox" readonly checked />
+                            <%= task.title %>
+                        <% } else if (task.status === "canceled") { %>
+                            <s>
+                                <input type="checkbox" readonly />
+                                <%= task.title %>
+                            </s>
+                        <% } else { %>
                             <input type="checkbox" readonly />
                             <%= task.title %>
-                        </s>
-                    <% } else { %>
-                        <input type="checkbox" readonly />
-                        <%= task.title %>
-                    <% } %>
-    
-                    <% if (task.notes) { %>
-                        <!-- TODO remove BR -->
-                        <br />
-                        <small>
-                            <%= task.notes.text %> 
-                        </small>
-                    <% } %>
-                </td>
-                <td>
-                    Start
-                </td>
-                <td>
-                    due
-                </td>
-            </tr>
-            <!-- TODO: children -->
-        <% }) %>
+                        <% } %>
+        
+                        <% if (task.notes) { %>
+                            <!-- TODO remove BR -->
+                            <br />
+                            <small>
+                                <%= task.notes.text %> 
+                            </small>
+                        <% } %>
+                    </td>
+                    <td>
+                        Start
+                    </td>
+                    <td>
+                        <% if (task.due_date) { %>
+                            <%= dateformat(task.due_date, "yyyy/mm/dd") %> 
+                        <% } %>
+                    </td>
+                </tr>
+                <!-- TODO: children -->
+            <% }) %>
+        </tbody>
     </table>
 </section>
 
