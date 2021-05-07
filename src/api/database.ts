@@ -148,3 +148,19 @@ export async function getNote(db: sqlite3.Database, note_id: number): Promise<IR
     )
     return await get<IRawNote>(db, statement);
 }
+
+export interface IRawRecurrence {
+    Z_PK: number;
+    ZTASK: number;
+    ZUID: string;
+    ZRULE: Buffer;
+}
+
+export async function getRecurrence(db: sqlite3.Database, recurrence_id: number): Promise<IRawRecurrence> {
+    // Only expect one note per task, at max.
+    const statement = SqlString.format(
+        "select * from ZRECURRENCE where Z_PK = ?",
+        [recurrence_id]
+    )
+    return await get<IRawRecurrence>(db, statement);
+}

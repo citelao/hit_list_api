@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 import Log from "../util/Logger";
-import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote, getCompletedTasks } from "./database";
-import { raw } from "sqlstring";
+import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote, getCompletedTasks, IRawRecurrence, getRecurrence } from "./database";
+import plist from "simple-plist";
 
 export type Status = "completed" | "canceled" | null;
 export type Priority = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
@@ -14,11 +14,16 @@ export interface ITask {
     due_date: Date | null;
     start_date: Date | null;
     notes: INote | null;
+    recurrence: IRecurrence | null;
 };
 
 export interface INote {
     id: number;
     text: string;
+}
+
+export interface IRecurrence {
+    // TODO
 }
 
 export interface ITag {
@@ -200,6 +205,9 @@ export default class Library {
         const rawNote = (rawTask.ZNOTES)
             ? await getNote(this.db, rawTask.ZNOTES)
             : null;
+        const rawRecurrence = (rawTask.ZRECURRENCE)
+            ? await getRecurrence(this.db, rawTask.ZRECURRENCE)
+            : null;
         return {
             id: rawTask.Z_PK,
             title: rawTask.ZTITLE,
@@ -214,7 +222,10 @@ export default class Library {
                 : null,
             notes: (rawNote)
                 ? await this.parseNote(rawNote)
-                : null
+                : null,
+            recurrence: (rawRecurrence)
+                ? await this.parseRecurrence(rawRecurrence)
+                : null,
         }
     }
 
@@ -223,5 +234,15 @@ export default class Library {
             id: rawNote.Z_PK,
             text: rawNote.ZSTRING
         }
+    }
+
+    private async parseRecurrence(rawRecurrence: IRawRecurrence): Promise<IRecurrence> {
+        const data = plist.parse(rawRecurrence.ZRULE);        
+        console.log(JSON.stringify(data));
+
+        // TODO, actually parse :D
+
+        return {
+        };
     }
 }
