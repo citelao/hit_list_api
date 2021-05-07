@@ -1,21 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo list - Home</title>
-</head>
-<body>
-    <h1><%= list.title %></h1>
-    <%- include('partials/listTree', { items: lists }) %>
+<%- include('layout/header', {}) %>
 
-    <ol>
-        <% tasks.forEach(task => { %>
-            <li>
-                <%= task.title %>
-            </li>
-        <% }) %>
-    </ol>
-</body>
-</html>
+<h1><%= list.title %></h1>
+<%- include('partials/listTree', { items: lists }) %>
+
+<ol>
+    <% tasks.forEach(task => { %>
+        <li>
+            <%= task.title %>
+        </li>
+    <% }) %>
+</ol>
+
+<%- include('layout/footer', {}) %>
