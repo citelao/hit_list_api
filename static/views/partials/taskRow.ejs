@@ -1,0 +1,50 @@
+<tr>
+    <td>
+        <% if (task.priority) { %>
+            <%= task.priority %> 
+        <% } %>
+    </td>
+    <td>
+        <% if (task.children.length != 0) { %>
+            &gt;
+        <% } %>
+    </td>
+    <td>
+        <span style="opacity: 0.3;">
+            <% for( let index = 0; index < depth; index++ ) { %>---<% } %>
+        </span>
+        <% if (task.status === "completed") { %>
+            <input type="checkbox" readonly checked />
+            <%= task.title %>
+        <% } else if (task.status === "canceled") { %>
+            <s>
+                <input type="checkbox" readonly />
+                <%= task.title %>
+            </s>
+        <% } else { %>
+            <input type="checkbox" readonly />
+            <%= task.title %>
+        <% } %>
+
+        <% if (task.notes) { %>
+            <!-- TODO remove BR -->
+            <br />
+            <small>
+                <%= task.notes.text %> 
+            </small>
+        <% } %>
+    </td>
+    <td>
+        <% if (task.start_date) { %>
+            <%= dateformat(task.start_date, "yyyy/mm/dd") %> 
+        <% } %>
+    </td>
+    <td>
+        <% if (task.due_date) { %>
+            <%= dateformat(task.due_date, "yyyy/mm/dd") %> 
+        <% } %>
+    </td>
+</tr>
+<% task.children.forEach(child => { %>
+    <%- include('taskRow', { task: child, depth: depth + 1 }) %>
+<% }) %>
