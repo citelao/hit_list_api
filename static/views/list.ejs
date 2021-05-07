@@ -9,33 +9,41 @@
 </nav>
 
 <section class="main">
-    <ol>
+    <table>
         <% tasks.forEach(task => { %>
-            <li>
-                <% if (task.status === "completed") { %>
-                    <input type="checkbox" readonly checked />
-                    <%= task.title %>
-                <% } else if (task.status === "canceled") { %>
-                    <s>
+            <tr>
+                <td>
+                    <% if (task.status === "completed") { %>
+                        <input type="checkbox" readonly checked />
+                        <%= task.title %>
+                    <% } else if (task.status === "canceled") { %>
+                        <s>
+                            <input type="checkbox" readonly />
+                            <%= task.title %>
+                        </s>
+                    <% } else { %>
                         <input type="checkbox" readonly />
                         <%= task.title %>
-                    </s>
-                <% } else { %>
-                    <input type="checkbox" readonly />
-                    <%= task.title %>
-                <% } %>
-
-                <% if (task.notes) { %>
-                    <!-- TODO remove BR -->
-                    <br />
-                    <small>
-                        <%= task.notes.text %> 
-                    </small>
-                <% } %>
-                <!-- TODO: children -->
-            </li>
+                    <% } %>
+    
+                    <% if (task.notes) { %>
+                        <!-- TODO remove BR -->
+                        <br />
+                        <small>
+                            <%= task.notes.text %> 
+                        </small>
+                    <% } %>
+                </td>
+                <td>
+                    Start
+                </td>
+                <td>
+                    due
+                </td>
+            </tr>
+            <!-- TODO: children -->
         <% }) %>
-    </ol>
+    </table>
 </section>
 
 <%- include('layout/footer', {}) %>
