@@ -1,9 +1,11 @@
 <ol>
     <% items.forEach(list => { %>
         <li>
-            <%= list.title %> 
             <% if (list.type === "folder") { %>
+                <strong><%= list.title %></strong>
                 <%- include('listTree', { items: list.children }) %>
+            <% } else if (list.type === "list") { %>
+                <a href="/list/<%= list.id %>/"><%= list.title %></a>
             <% } %>
         </li>
     <% }) %>
