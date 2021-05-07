@@ -4,11 +4,13 @@ import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks
 import { raw } from "sqlstring";
 
 export type Status = "completed" | "canceled" | null;
+export type Priority = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
 export interface ITask {
     id: number;
     title: string;
     children: Array<ITask>;
     status: Status;
+    priority: Priority;
     due_date: Date | null;
     start_date: Date | null;
     notes: INote | null;
@@ -171,6 +173,18 @@ export default class Library {
         throw new Error(`Unexpected status "${status}"`);
     } 
 
+    private static parsePriority(priority: number | null): Priority {
+        if (!priority || priority === 0) {
+            return null;
+        }
+
+        if (Math.floor(priority) != priority || priority > 9 || priority < 0) {
+            throw new Error(`Unexpected priority "${priority}"`);
+        }
+
+        return priority as Priority;
+    }
+
     private static parseTimestamp(timestamp: number): Date {
         // All timestamp dates in the Hit List seem to be offset by a fixed
         // value. The offset here is basically ad-hoc determined by subtracting
@@ -191,6 +205,7 @@ export default class Library {
             title: rawTask.ZTITLE,
             children: await Promise.all(childTasks.map((child) => this.parseTask(child))),
             status: Library.parseStatus(rawTask.ZSTATUS),
+            priority: Library.parsePriority(rawTask.ZPRIORITY),
             due_date: (rawTask.ZDUEDATE)
                 ? Library.parseTimestamp(rawTask.ZDUEDATE)
                 : null,

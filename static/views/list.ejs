@@ -12,6 +12,7 @@
     <table>
         <thead>
             <tr>
+                <th>&nbsp;<!-- Priority (implicit) --></th>
                 <th>&nbsp;<!-- Title (implicit) --></th>
                 <th>Start</th>
                 <th>Due</th>
@@ -20,6 +21,11 @@
         <tbody>
             <% tasks.forEach(task => { %>
                 <tr>
+                    <td>
+                        <% if (task.priority) { %>
+                            <%= task.priority %> 
+                        <% } %>
+                    </td>
                     <td>
                         <% if (task.status === "completed") { %>
                             <input type="checkbox" readonly checked />

@@ -63,7 +63,6 @@ export interface IRawTask {
     Z_ENT: number | null;
     Z_OPT: number | null;
     ZARCHIVED: number | null;
-    ZPRIORITY: number | null;
     ZPARENTLIST: number | null;
     ZPARENTTASK: number | null;
     ZRECURRENCE: number | null;
@@ -83,6 +82,9 @@ export interface IRawTask {
 
     // Completed or cancelled or active.
     ZSTATUS: string | null;
+
+    // Priority
+    ZPRIORITY: number | null;
 
     ZDUEDATE: number | null;
     ZSTARTDATE: number | null;
