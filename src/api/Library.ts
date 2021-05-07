@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 import Log from "../util/Logger";
 import WebArchive from "../util/WebArchive";
-import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote, getCompletedTasks, IRawRecurrence, getRecurrence } from "./database";
+import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote, getCompletedTasks, IRawRecurrence, getRecurrence, getTask } from "./database";
 import { parseRecurrenceBuffer } from "./recurrence";
 
 export type Status = "completed" | "canceled" | null;
@@ -107,6 +107,11 @@ export default class Library {
         Log.verbose(tasks, { dir: true });
         // throw new Error("unimpl");
         return await Promise.all(tasks.map((task) => this.parseTask(task)));
+    }
+
+    public async getTask(id: number): Promise<ITask> {
+        const task = await getTask(this.db, id);
+        return await this.parseTask(task);
     }
 
     public async getCompletedTasks(count: number): Promise<Array<ITask>> {

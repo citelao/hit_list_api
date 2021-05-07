@@ -1,6 +1,7 @@
 import express from "express";
 import Library, { IFolder, IList } from "../api/Library";
 import dateformat from "dateformat";
+import Log from "../util/Logger";
 const app = express();
 const port = 3000;
 
@@ -55,6 +56,15 @@ app.get('/list/:listId', async (req, res) => {
   }
   const tasks = await library.getTasks(list);
   res.render("list", { lists, list, tasks });
+});
+
+app.get('/task/:taskId', async (req, res) => {
+  const library = await Library.create(PATH);
+  const taskId = parseInt(req.params.taskId);
+  const task = await library.getTask(taskId);
+  const lists = await library.getLists();
+  Log.verbose(task, { dir: true });
+  res.render("task", { lists, task });
 });
 
 app.listen(port, () => {

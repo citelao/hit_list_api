@@ -1,0 +1,32 @@
+<%- include('layout/header', {}) %>
+
+<header>
+    <h1>Todos</h1>
+</header>
+
+<nav>
+<%- include('partials/listTree', { items: lists }) %>
+</nav>
+
+<section class="main">
+    <table>
+        <thead>
+            <tr>
+                <th>&nbsp;<!-- Priority (implicit) --></th>
+                <th>&nbsp;<!-- has children (implicit) --></th>
+                <th>&nbsp;<!-- Title (implicit) --></th>
+                <th>Start</th>
+                <th>Due</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%- include('partials/taskRow', { task: task, depth: 0 }) %>
+        </tbody>
+    </table>
+
+    <% if (task.notes) { %>
+        <%- task.notes.html %>
+    <% } %>
+</section>
+
+<%- include('layout/footer', {}) %>

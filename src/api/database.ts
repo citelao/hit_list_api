@@ -109,6 +109,15 @@ export async function getTasks(db: sqlite3.Database, list_id?: number, limit?: n
     return await all<IRawTask>(db, statement);
 }
 
+export async function getTask(db: sqlite3.Database, task_id: number): Promise<IRawTask> {
+    // Only expect one note per task, at max.
+    const statement = SqlString.format(
+        "select * from ZTASK where Z_PK = ?",
+        [task_id]
+    )
+    return await get<IRawTask>(db, statement);
+}
+
 export async function getCompletedTasks(db: sqlite3.Database, list_id?: number, limit?: number): Promise<IRawTask[]> {
     const allTasksStatement = SqlString.format(
         "select * from ZTASK where ZCOMPLETEDDATE is not null order by ZCOMPLETEDDATE desc limit ?",
