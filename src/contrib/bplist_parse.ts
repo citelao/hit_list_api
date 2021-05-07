@@ -9,3 +9,6 @@ var data = plist.parse(
   '<plist><dict><key>name</key><string>Joe</string></dict></plist>'
 )
 console.log(JSON.stringify(data));
+
+// Note this isn't actually a BPLIST but you can just save the blob from the
+// SQLITE as a .plist and quicklook will preview it properly :)
