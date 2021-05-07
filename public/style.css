@@ -52,7 +52,7 @@ table {
 
         td.main .note {
             opacity: 0.3;
-            overflow: hidden;
+            overflow: scroll;
 
             max-height: 2rem;
             display: block;
