@@ -44,6 +44,16 @@ table {
     border-spacing: 0.2rem 0.5rem;
 }
 
+    tr.completed,
+    tr.canceled {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+        tr.completed input,
+        tr.canceled input {
+            opacity: 0.4;
+        }
+
     td.main {
         max-width: 40rem;
         overflow-x: hidden;

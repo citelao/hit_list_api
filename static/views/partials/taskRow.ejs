@@ -1,4 +1,10 @@
-<tr>
+<% if (task.status === "completed") { %>
+    <tr class="completed">
+<% } else if (task.status === "canceled") { %>
+    <tr class="canceled">
+<% } else { %>
+    <tr>
+<% } %>
     <td>
         <% if (task.priority) { %>
             <%= task.priority %> 
