@@ -24,6 +24,14 @@
                     <input type="checkbox" readonly />
                     <%= task.title %>
                 <% } %>
+
+                <% if (task.notes) { %>
+                    <!-- TODO remove BR -->
+                    <br />
+                    <small>
+                        <%= task.notes.text %> 
+                    </small>
+                <% } %>
                 <!-- TODO: children -->
             </li>
         <% }) %>
