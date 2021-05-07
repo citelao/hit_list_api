@@ -13,6 +13,7 @@
         <span style="opacity: 0.3;">
             <% for( let index = 0; index < depth; index++ ) { %>---<% } %>
         </span>
+
         <% if (task.status === "completed") { %>
             <input type="checkbox" readonly checked />
             <%= task.title %>
@@ -24,6 +25,10 @@
         <% } else { %>
             <input type="checkbox" readonly />
             <%= task.title %>
+        <% } %>
+
+        <% if (task.recurrence) { %>
+            (R)
         <% } %>
 
         <% if (task.notes) { %>

@@ -1,7 +1,7 @@
 import sqlite3 from "sqlite3";
 import Log from "../util/Logger";
 import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote, getCompletedTasks, IRawRecurrence, getRecurrence } from "./database";
-import plist from "simple-plist";
+import { parseRecurrenceBuffer } from "./recurrence";
 
 export type Status = "completed" | "canceled" | null;
 export type Priority = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | null;
@@ -237,10 +237,7 @@ export default class Library {
     }
 
     private async parseRecurrence(rawRecurrence: IRawRecurrence): Promise<IRecurrence> {
-        const data = plist.parse(rawRecurrence.ZRULE);        
-        console.log(JSON.stringify(data));
-
-        // TODO, actually parse :D
+        const naiveRecurrce = parseRecurrenceBuffer(rawRecurrence.ZRULE);
 
         return {
         };
