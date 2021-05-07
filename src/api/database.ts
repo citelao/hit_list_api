@@ -66,6 +66,7 @@ export interface IRawTask {
     ZSTATUS: string | null;
 
     ZDUEDATE: number | null;
+    ZSTARTDATE: number | null;
 
     // ID of any related notes
     ZNOTES: number | null;

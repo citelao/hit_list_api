@@ -43,7 +43,9 @@
                         <% } %>
                     </td>
                     <td>
-                        
+                        <% if (task.start_date) { %>
+                            <%= dateformat(task.start_date, "yyyy/mm/dd") %> 
+                        <% } %>
                     </td>
                     <td>
                         <% if (task.due_date) { %>

@@ -10,6 +10,7 @@ export interface ITask {
     children: Array<ITask>;
     status: Status;
     due_date: Date | null;
+    start_date: Date | null;
     notes: INote | null;
 };
 
@@ -192,6 +193,9 @@ export default class Library {
             status: Library.parseStatus(rawTask.ZSTATUS),
             due_date: (rawTask.ZDUEDATE)
                 ? Library.parseTimestamp(rawTask.ZDUEDATE)
+                : null,
+            start_date: (rawTask.ZSTARTDATE)
+                ? Library.parseTimestamp(rawTask.ZSTARTDATE)
                 : null,
             notes: (rawNote)
                 ? await this.parseNote(rawNote)
