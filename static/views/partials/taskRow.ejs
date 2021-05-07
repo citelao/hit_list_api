@@ -7,7 +7,7 @@
 <% } %>
     <td>
         <% if (task.priority) { %>
-            <%= task.priority %> 
+            <span class="priority-<%= task.priority %>"><%= task.priority %></span>
         <% } %>
     </td>
     <td>
