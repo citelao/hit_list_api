@@ -9,5 +9,13 @@
 <body>
     <h1><%= list.title %></h1>
     <%- include('partials/listTree', { items: lists }) %>
+
+    <ol>
+        <% tasks.forEach(task => { %>
+            <li>
+                <%= task.title %>
+            </li>
+        <% }) %>
+    </ol>
 </body>
 </html>
