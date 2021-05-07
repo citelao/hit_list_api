@@ -51,12 +51,12 @@
     </td>
     <td>
         <% if (task.start_date) { %>
-            <%= dateformat(task.start_date, "yyyy/mm/dd") %> 
+            <span title="<%= dateformat(task.start_date, "yyyy/mm/dd") %>"><%= relativeDate(task.start_date) %></span>
         <% } %>
     </td>
     <td>
         <% if (task.due_date) { %>
-            <%= dateformat(task.due_date, "yyyy/mm/dd") %> 
+            <span title="<%= dateformat(task.due_date, "yyyy/mm/dd") %>"><%= relativeDate(task.due_date) %></span>
         <% } %>
     </td>
 </tr>

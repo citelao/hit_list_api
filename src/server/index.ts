@@ -1,6 +1,7 @@
 import express from "express";
 import Library, { IFolder, IList } from "../api/Library";
 import dateformat from "dateformat";
+import relativeDate from "tiny-relative-date";
 import Log from "../util/Logger";
 const app = express();
 const port = 3000;
@@ -31,9 +32,10 @@ app.set("views", "static/views/");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-// Add dateformat to all ejs
+// Add dateformat & tiny-relative-date to all ejs
 app.use((req, res, next)=>{
   res.locals.dateformat = dateformat;
+  res.locals.relativeDate = relativeDate;
   next();
 });
 
