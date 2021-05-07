@@ -1,14 +1,21 @@
 <%- include('layout/header', {}) %>
 
-<h1><%= list.title %></h1>
-<%- include('partials/listTree', { items: lists }) %>
+<header>
+    <h1><%= list.title %></h1>
+</header>
 
-<ol>
-    <% tasks.forEach(task => { %>
-        <li>
-            <%= task.title %>
-        </li>
-    <% }) %>
-</ol>
+<nav>
+<%- include('partials/listTree', { items: lists }) %>
+</nav>
+
+<section class="main">
+    <ol>
+        <% tasks.forEach(task => { %>
+            <li>
+                <%= task.title %>
+            </li>
+        <% }) %>
+    </ol>
+</section>
 
 <%- include('layout/footer', {}) %>

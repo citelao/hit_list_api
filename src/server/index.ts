@@ -3,9 +3,6 @@ import Library, { IFolder, IList } from "../api/Library";
 const app = express();
 const port = 3000;
 
-app.set("views", "static/views/");
-app.set("view engine", "ejs");
-
 // TODO: dynamic path.
 const PATH = "/Users/citelao/Library/Application Support/The Hit List/The Hit List Library.thllibrary/library.sqlite3";
 
@@ -27,6 +24,10 @@ function findList(lists: Array<IList | IFolder>, predicate: (list: IList | IFold
 
   return null;
 }
+
+app.set("views", "static/views/");
+app.set("view engine", "ejs");
+app.use(express.static("public"));
 
 app.get('/', async (req, res) => {
   const library = await Library.create(PATH);
