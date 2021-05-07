@@ -137,7 +137,8 @@ export interface IRawNote {
     Z_PK: number;
     ZSTRING: string;
 
-    // There's also a Blob of ZWEBARCHIVEDATA which includes bold italics etc.
+    // Apple WebArchive of rich text data:
+    ZWEBARCHIVEDATA: Buffer | null;
 }
 
 export async function getNote(db: sqlite3.Database, note_id: number): Promise<IRawNote> {

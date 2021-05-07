@@ -1,5 +1,6 @@
 import sqlite3 from "sqlite3";
 import Log from "../util/Logger";
+import WebArchive from "../util/WebArchive";
 import { IGroup, getRootGroup, getChildGroups, getTasks, IRawTask, getChildTasks, getNote, IRawNote, getCompletedTasks, IRawRecurrence, getRecurrence } from "./database";
 import { parseRecurrenceBuffer } from "./recurrence";
 
@@ -20,6 +21,7 @@ export interface ITask {
 export interface INote {
     id: number;
     text: string;
+    html: string | null;
 }
 
 export interface IRecurrence {
@@ -230,9 +232,14 @@ export default class Library {
     }
 
     private async parseNote(rawNote: IRawNote): Promise<INote> {
+        const html = (rawNote.ZWEBARCHIVEDATA)
+            ? new WebArchive(rawNote.ZWEBARCHIVEDATA).html
+            : null;
+
         return {
             id: rawNote.Z_PK,
-            text: rawNote.ZSTRING
+            text: rawNote.ZSTRING,
+            html: html
         }
     }
 
